@@ -2,6 +2,7 @@ function calculate(text)
 {
     var pattern = /\d*\.?\d+|\+|\-|\*|\/|\(|\)/g;
     var tokens = text.match(pattern);
+    console.log(tokens);
     if(tokens===null){ tokens = []; }
     
     try
@@ -31,53 +32,72 @@ function setup_calc(div)
 
 function read_operand(tokens)
 {
+    console.log(tokens);
     var first = tokens[0];
     var number = parseFloat(first,10);
     
     if (first=="("){
         tokens.shift();
+        console.log(tokens);
         number = evaluate(tokens);
     }
-    if (first == ")"){
+    else if (first == ")"){
         return ")";
     }
-    if(first== "-"){
+    else if(first== "-"){
         tokens.shift();
-        number = parseFloat(tokens[0],10)
+        number = parseFloat(tokens[0],10);
         tokens.shift();
         return -1*number;
     }
-    if (isNaN(number)){
+    else if (isNaN(number)){
        throw "Number expected"; 
     }
     else{
         tokens.shift();
-        return number;}
+    }
+    return number;
     
 }
+
+/*
+function read_term(tokens)
+{
+    if (tokens.length ===0){
+        throw "Missing operand";
+    }
+}
+*/
 
 function evaluate(tokens)
 {
     var operands = ['+','-','*','/'];
     
     if (tokens.length === 0){
-        throw "Missing operand";}
+        throw "Missing operand";
+        }
     else{
         var value = read_operand(tokens);
+        console.log(tokens);
         
         while(tokens.length !== 0){
             if(tokens[0]==')'){
                 tokens.shift();
-                return value; }
+                console.log(tokens);
+                return value; 
+            }
             var op = tokens.shift();
+            console.log(tokens);
             if(operands.indexOf(op)==-1){
-                throw "Missing operand";}
+                throw "Missing operand";
+            }
             else{
                 var value2 = read_operand(tokens);
+                console.log(tokens);
                 if(op=='+'){ value= value + value2; }
-                if(op=='-'){ value= value - value2; }
-                if(op=='*'){ value= value * value2; }
-                if(op=='/'){ value= value / value2; }
+                else if(op=='-'){ value= value - value2; }
+                else if(op=='*'){ value= value * value2; }
+                else if(op=='/'){ value= value / value2; }
             }
         }
         return value;
