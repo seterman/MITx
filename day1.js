@@ -34,6 +34,16 @@ function read_operand(tokens)
     tokens.shift();
     var number = parseInt(first,10);
     
+    if (first=="(")
+    {
+        tokens.shift();
+        number = evaluate(tokens);
+    }
+    if (first==")")
+    { 
+        tokens.shift();
+        return first; 
+    }
     if (isNaN(number))   
     {
        throw "Number expected";
@@ -59,10 +69,15 @@ function evaluate(tokens)
         
         while(tokens.length !== 0)
         {
+            if(value==')')
+            {
+                tokens.shift();
+                return value;
+            }
             var op = tokens.shift();
             if(operands.indexOf(op)==-1)
             {
-                throw "Missing operand"
+                throw "Missing operand";
             }
             else
             {
