@@ -1,6 +1,6 @@
 function calculate(text)
 {
-    var pattern = /\d+|\+|\-|\*|\/|\(|\)/g;
+    var pattern = /\d*\.?\d+|\+|\-|\*|\/|\(|\)/g;
     var tokens = text.match(pattern);
     if(tokens===null){ tokens = []; }
     
@@ -32,7 +32,7 @@ function setup_calc(div)
 function read_operand(tokens)
 {
     var first = tokens[0];
-    var number = parseInt(first,10);
+    var number = parseFloat(first,10);
     
     if (first=="("){
         tokens.shift();
@@ -43,7 +43,7 @@ function read_operand(tokens)
     }
     if(first== "-"){
         tokens.shift();
-        number = parseInt(tokens[0],10)
+        number = parseFloat(tokens[0],10)
         tokens.shift();
         return -1*number;
     }
