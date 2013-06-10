@@ -1,8 +1,9 @@
+/* Generates tokens and calls evaluate 
+*/
 function calculate(text)
 {
     var pattern = /\d*\.?\d+|\+|\-|\*|\/|\(|\)/g;
     var tokens = text.match(pattern);
-    console.log(tokens);
     if(tokens===null){ tokens = []; }
     
     try
@@ -17,6 +18,8 @@ function calculate(text)
     }
 }
 
+/* arranges the calculator nicely on the page
+*/
 function setup_calc(div)
 {
     var input = $('<input></input>',{type:"text", size: 50});
@@ -30,15 +33,16 @@ function setup_calc(div)
     $(div).append(input,button,output);
 }
 
+/* takes an array of tokens and processes the first one. If it is a number, 
+returns the number. If it is a parenthesis, deals with it appropriately */
 function read_operand(tokens)
 {
-    console.log(tokens);
+    
     var first = tokens[0];
     var number = parseFloat(first,10);
     
     if (first=="("){
         tokens.shift();
-        console.log(tokens);
         number = evaluate(tokens);
     }
     else if (first == ")"){
@@ -60,15 +64,17 @@ function read_operand(tokens)
     
 }
 
+
+/* for order of operations
+*/
 /*
 function read_term(tokens)
 {
-    if (tokens.length ===0){
-        throw "Missing operand";
-    }
+    
 }
 */
 
+/* takes a list of tokens and evaluates the expression they represent */
 function evaluate(tokens)
 {
     var operands = ['+','-','*','/'];
@@ -78,22 +84,19 @@ function evaluate(tokens)
         }
     else{
         var value = read_operand(tokens);
-        console.log(tokens);
         
         while(tokens.length !== 0){
             if(tokens[0]==')'){
                 tokens.shift();
-                console.log(tokens);
                 return value; 
             }
             var op = tokens.shift();
-            console.log(tokens);
+            
             if(operands.indexOf(op)==-1){
                 throw "Missing operand";
             }
             else{
                 var value2 = read_operand(tokens);
-                console.log(tokens);
                 if(op=='+'){ value= value + value2; }
                 else if(op=='-'){ value= value - value2; }
                 else if(op=='*'){ value= value * value2; }
