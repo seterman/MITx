@@ -6,14 +6,12 @@ function calculate(text)
     var tokens = text.match(pattern);
     if(tokens===null){ tokens = []; }
     
-    try
-    {
+    try{
         var answer = evaluate(tokens);
         if(tokens.length !== 0){ throw "Ill-formed expression"; }
         return String(answer);
     }
-    catch(err)
-    {
+    catch(err){
         return err;
     }
 }
@@ -25,16 +23,18 @@ function setup_calc(div)
     var input = $('<input></input>',{type:"text", size: 50});
     var output  = $('<div></div>');
     var button = $('<button>Calculate</button>');
-    button.bind("click", function()
-    {
+    button.bind("click", function(){
         output.text(String(calculate(input.val())));
     });
     
     $(div).append(input,button,output);
 }
 
+var isClosed = true;
 /* takes an array of tokens and processes the first one. If it is a number, 
 returns the number. If it is a parenthesis, deals with it appropriately */
+
+/* check for -(a+b) etc? */
 function read_operand(tokens)
 {
     
@@ -43,9 +43,11 @@ function read_operand(tokens)
     
     if (first=="("){
         tokens.shift();
+        isClosed = false;
         number = evaluate(tokens);
     }
     else if (first == ")"){
+        //isClosed = true;
         return ")";
     }
     else if(first== "-"){
@@ -87,6 +89,7 @@ function evaluate(tokens)
         
         while(tokens.length !== 0){
             if(tokens[0]==')'){
+                isClosed=true;
                 tokens.shift();
                 return value; 
             }
@@ -103,6 +106,7 @@ function evaluate(tokens)
                 else if(op=='/'){ value= value / value2; }
             }
         }
+        if (!isClosed){ throw "Unbalancced parentheses"; }
         return value;
     }
 }
