@@ -31,7 +31,6 @@ function setup_calc(div)
 function read_operand(tokens)
 {
     var first = tokens[0];
-    tokens.shift();
     var number = parseInt(first,10);
     
     if (first=="(")
@@ -39,10 +38,9 @@ function read_operand(tokens)
         tokens.shift();
         number = evaluate(tokens);
     }
-    if (first==")")
-    { 
-        tokens.shift();
-        return first; 
+    if (first == ")")
+    {
+        return ")";
     }
     if (isNaN(number))   
     {
@@ -50,6 +48,7 @@ function read_operand(tokens)
     }
     else
     {
+        tokens.shift();
         return number;
     }
     
@@ -69,7 +68,7 @@ function evaluate(tokens)
         
         while(tokens.length !== 0)
         {
-            if(value==')')
+            if(tokens[0]==')')
             {
                 tokens.shift();
                 return value;
