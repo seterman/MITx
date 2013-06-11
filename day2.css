@@ -1,0 +1,24 @@
+/* Stylesheet for calculator */
+
+
+h1 {
+    font-size: 24pt;
+    font-family: fantasy;
+    text-align: center;
+}
+
+.calculator {
+    font-size: 24pt;
+}
+
+.calculator button {
+    font-size: 16pt;
+}
+
+.calculator input[type="text"]{
+    font-size:16pt;
+}
+
+#calc1 button {
+    font-size:12pt;
+}
