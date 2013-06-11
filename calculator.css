@@ -1,0 +1,17 @@
+.background {
+    height:520px;
+    width:420px;
+    border:solid;
+    position:relative;
+}
+
+.screen {
+    height:80px;
+    width:330px;
+    border:solid;
+    margin:20px;
+    border-width:1px;
+    text-align:right;
+    padding-right:50px;
+    padding-top:20px;
+}

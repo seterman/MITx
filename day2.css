@@ -9,6 +9,7 @@ h1 {
 
 .calculator {
     font-size: 24pt;
+    position: relative;
 }
 
 .calculator button {
@@ -17,6 +18,9 @@ h1 {
     /*height: 80px;*/
     padding:15px;
     margin:10px;
+    /*position: absolute;*/
+    /*top: 10px;*/
+    /*left:10px;*/
     /*margin-bottom:10px;*/
     /*border-radius:5px;*/
     /*border-color:#6D79DE;*/
@@ -32,6 +36,13 @@ h1 {
     /*border-width:3px;*/
 }
 
+.calculator input[type="text"]:hover {
+    border-color:black;
+}
+.calculator input[type="text"]:focus {
+    background-color:#E0F0F0;
+}
+
 .calculator .output {
     background-color:#DDDDDD;
     width: 475px;
@@ -41,6 +52,10 @@ h1 {
     border-width:1px;
     border-color:gray;
     border-radius:5px;
+}
+
+.highlight {
+    
 }
 
 /*#calc1 button {*/
