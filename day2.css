@@ -2,7 +2,7 @@
 
 
 h1 {
-    font-size: 24pt;
+    font-size: 32pt;
     font-family: fantasy;
     text-align: center;
 }
@@ -13,12 +13,36 @@ h1 {
 
 .calculator button {
     font-size: 16pt;
+    /*width: 200px;*/
+    /*height: 80px;*/
+    padding:15px;
+    margin:10px;
+    /*margin-bottom:10px;*/
+    /*border-radius:5px;*/
+    /*border-color:#6D79DE;*/
 }
 
 .calculator input[type="text"]{
     font-size:16pt;
+    padding:13px;
+    width: 350px;
+    margin:10px;
+    border-color:#6D79DE;
+    border-radius:5px;
+    /*border-width:3px;*/
 }
 
-#calc1 button {
-    font-size:12pt;
+.calculator .output {
+    background-color:#DDDDDD;
+    width: 475px;
+    padding: 10px;
+    margin:10px;
+    border-style:solid;
+    border-width:1px;
+    border-color:gray;
+    border-radius:5px;
 }
+
+/*#calc1 button {*/
+/*    font-size:12pt;*/
+/*}*/
