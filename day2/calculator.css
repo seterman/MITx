@@ -3,6 +3,7 @@
     width:420px;
     border:solid;
     position:relative;
+    background-color:#AFAFAF;
 }
 
 .screen {
@@ -11,15 +12,23 @@
     border:solid;
     margin:20px;
     border-width:1px;
+    border-radius:10px;
     text-align:right;
     padding-right:50px;
     padding-top:20px;
+    background-color:#EAFFC7;
+    font-size:18pt;
 }
 
 button {
-    height:45px;
-    width:80px;
+    height:50px;
+    width:90px;
     /*margin:7px;*/
-    margin-left:15px;
-    margin-top:15px;
+    margin-left:5px;
+    margin-top:10px;
+    font-size:18pt;
+    border-radius:10px;
+    position:relative;
+    left:10px;
+    background-color:#D4D4D4;
 }

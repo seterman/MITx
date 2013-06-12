@@ -14,7 +14,14 @@ function test_line() {
     
     ctx.beginPath();
     ctx.moveTo(50,50);
+    ctx.lineTo(150,50);
     ctx.lineTo(150,150);
+    ctx.lineTo(50,150);
+    ctx.lineTo(50,50);
+    ctx.lineWidth=10;
+    ctx.strokeStyle = "red";
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
     ctx.stroke();
 
 }
