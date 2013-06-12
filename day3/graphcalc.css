@@ -1,0 +1,14 @@
+#graph_canvas{
+    border:solid 1px black;
+    background-color:#F0FFF0;
+}
+#function_input{
+    font-family:monospace;
+    font-weight:bold;
+}
+.graphcalc{
+    width:440;
+    padding:30;
+    background-color:lightblue;
+    
+}
