@@ -1,0 +1,35 @@
+<html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+        <script>
+$(function() {
+    $(".listener").bind("click", function(evt) {
+        var str = "" +
+          "Click!\n" +
+          "Event Target: " + $(evt.target).attr("id") + "\n" +
+          "This:" + $(this).attr("id") + "\n";
+      
+        alert(str);
+        evt.stopPropagation;
+    });
+});
+        </script>
+        <style type=text/css>
+#outer {
+  padding: 40px;
+  border: 3px solid red;
+}
+
+#inner {
+  width: 100px;
+    height: 100px;
+    background-color: yellow;
+}
+        </style>
+    </head>
+    <body>
+        <div id="outer" class="listener">
+            <div id="inner" class="listener"></div>
+        </div>
+    </body>
+</html>
