@@ -3,6 +3,23 @@ var graphcalc = (function () {
     
 /* sets up the calculator */
     function setup_interface(div) {
+        
+        var button_info = [[{text:"C",class:"clear"},
+                            {text:"&divide;",class:"op",char:"/"},
+                            {text:"&times;",class:"op",char:"*"}],
+                          
+                           [{text:"7",class:"num",char:"7"},
+                            {text:"8",class:"num",char:"8"},
+                            {text:"9",class:"num",char:"9"},
+                            {text:"&minus;",class:"op",char:"-"}],
+                          
+                           [{text:"4",class:"num",char:"4"},
+                            {text:"5",class:"num",char:"5"},
+                            {text:"6",class:"num",char:"6"},
+                            {text:"+",class:"op",char:"+"}]]
+        
+//        background.append("<button></button>",{class:item.class text:item.text})
+        
         var calc_interface = ''
         + '<div class="background">'
         + '    <div class="errorMsg">ERROR:</div>'
