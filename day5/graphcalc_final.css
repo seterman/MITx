@@ -1,0 +1,36 @@
+.background {
+    height:520px;
+    width:420px;
+    border:solid gray;
+    position:relative;
+    background-color:#ACBEDF;
+}
+
+.screen {
+    height:200px;
+    width:380px;
+    border:solid gray;
+    margin:20px;
+    border-width:1px;
+    border-radius:10px;
+    text-align:right;
+/*
+    padding-right:50px;
+    padding-top:20px;
+*/
+    background-color: white;
+    font-size:18pt;
+}
+
+button {
+    height:35px;
+    width:90px;
+    /*margin:7px;*/
+    margin-left:5px;
+    margin-top:10px;
+    font-size:18pt;
+/*    border-radius:10px;*/
+    position:relative;
+    left:10px;
+/*    background-color:#D4D4D4;*/
+}

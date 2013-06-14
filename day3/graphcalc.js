@@ -54,13 +54,6 @@ var graphcalc = (function () {
                 maxY=yvals[index];
             }
         }
-        // var yStep= 1.25*(maxY-minY)/400; //1.20 is to ensure the edges will be well-buffered
-        // var yGraph=[];
-        // temp = 0;
-        // while(temp<yvals.length){
-        //     yGraph[temp]=200-Math.floor(yvals[temp]/yStep); //magic number.... canvas height/2
-        //     temp++;
-        // }
         
         var yGraph = [];
         var scaleFactor = (canvasDOM.height-40)/(maxY-minY);
@@ -91,6 +84,7 @@ var graphcalc = (function () {
         minX.val('0');
         maxX.val('6*pi');
     }
+    
     function setup(div) {
         var wrapper=$("<div id=\"graph_wrapper\"></div>");
         var canvasJQ = $("<canvas id=\"graph_canvas\"></canvas>");
@@ -128,8 +122,6 @@ var graphcalc = (function () {
         clearButton.bind("click", function(){
             clear(canvasJQ, inputFunction, inputMin, inputMax);
         });
-        // var inputF = $("<div>f(x):<input id=\"function_input\" type=\"text\"  width=400></input></div>");
-        // var inputMin = $("<div>min x:<input id=\"minX_input\" type=\"text\"></input>max x:<input id=\"maxX_input\" type=\"text\"></input></div>");
         inputDiv.append(inputHolder);
         inputDiv.append(minMaxHolder);
         inputDiv.append(buttonDiv);

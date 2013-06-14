@@ -46,6 +46,8 @@ var Inspector = function($) {
         var propertyList = root.find(".property-list");
         textEditor.val(html);
         
+        propertyList.html("");
+        
         propertyList.append("<span>Number of children:"+selection.children().length+"</span>", {class:"make-black"});
         propertyList.append("<br/>");
         propertyList.append("<span>Offset left:"+selection.offset().left+"</span>");
