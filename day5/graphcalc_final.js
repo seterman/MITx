@@ -1,9 +1,11 @@
 var graphcalc = (function () {
     var exports = {};
     
+/* sets up the calculator */
     function setup_interface(div) {
         var calc_interface = ''
         + '<div class="background">'
+        + '    <div class="errorMsg">ERROR:</div>'
         + '    <canvas class="screen"></canvas>'
 //        + '    <div class="row">'
 //        + '        <button>MC</button>'
@@ -11,9 +13,9 @@ var graphcalc = (function () {
 //        + '        <button>M-</button>'
 //        + '        <button>MRC</button>'
 //        + '    </div>'
+        + '    <div class="rangeInputHolder"></div>'
         + '    <div class="row">'
-        + '        <button>C</button>'
-        + '        <button>±</button>'
+        + '        <button class="clear">C</button>'
         + '        <button class="op" data-char="/">÷</button>'
         + '        <button class="op" data-char="*">x</button>'
         + '    </div>'
@@ -33,6 +35,7 @@ var graphcalc = (function () {
         + '        <button class="num" data-char="1">1</button>'
         + '        <button class="num" data-char="2">2</button>'
         + '        <button class="num" data-char="3">3</button>'
+        + '        <button class="num" data-char="x">&#120013;</button>'
         + '    </div>'
         + '    <div class="row">'
         + '        <button class="num" data-char="0">0</button>'
@@ -43,42 +46,204 @@ var graphcalc = (function () {
         + '</div>'     
         div.append(calc_interface);
         
+        $('.rangeInputHolder').append("Min:<input class=inputMin></input>"
+                                      +"Max:<input class=inputMax></input>")
+        
+        
+        /* sets default min and max values */
+        $('.inputMin').val("1");
+        $('.inputMax').val("10");
+        
         bind_buttons();
     }
     
     var input_string  = ""
+    var display_string = ""
+    var isError = false;
+    
+/* assigns appropriate handlers to all buttons */
     function bind_buttons() {
+        
+        /* number and operator buttons */
         $('.num,.op').on("click", function () {
+            isError=false;
             var input = $(this).attr("data-char");
             input_string += input;
+            display_string += $(this).text();
             console.log("input:",input,"string:",input_string);
+            
+            display_text(display_string);
         });
         
+        /* equals button */
         $('.equals').on("click", function () {
-            var expr_tree = calculator.parse(input_string);
-            console.log(expr_tree);
-            var answer = calculator.evaluate(expr_tree);
-            console.log("answer:",answer)
-            display_text(String(answer));
-            input_string = "";
             
+            try{
+                isError=false;
+                var expr_tree = calculator.parse(input_string);
+                var answer = String(calculator.evaluate(expr_tree));
+            }
+            catch(err){
+                isError=true;
+                answer = err
+            }
+            clear();
+            display_text(answer);
+            
+        });
+        
+        /* clear button */
+        $('.clear').on("click",function(){
+            clear();
+            isError=false;
+            /* sets default min and max values */
+            $('.inputMin').val("1");
+            $('.inputMax').val("10");
+        });
+        
+        /* plot button */
+        $('.plot').on("click",plot);
+        
+        /* all buttons: error message display */
+        $('button').on("click", function () {
+            if (isError) {
+                $('.errorMsg').css("visibility","visible");
+            } else {
+                $('.errorMsg').css("visibility","hidden");
+            }
         });
     }
     
-    function display_text(output) {
+/* clear function */
+/* clears canvas, input and display strings */
+    function clear() {
         JQcanvas = $(".screen");
-        console.log("jqcanvas:",JQcanvas);
         DOMcanvas = JQcanvas[0];
         var ctx = DOMcanvas.getContext('2d');
         
         ctx.clearRect(0,0,JQcanvas.width(),JQcanvas.height());
+        input_string = "";
+        display_string = "";
+    }
+    
+/* displays text on the screen */    
+    function display_text(output) {
+        JQcanvas = $(".screen");
+        DOMcanvas = JQcanvas[0];
+        DOMcanvas.height = JQcanvas.height();
+        DOMcanvas.width = JQcanvas.width();
+        var ctx = DOMcanvas.getContext('2d');
         
-        ctx.beginPath();
-        ctx.fillStyle = "black";
+        ctx.clearRect(0,0,JQcanvas.width(),JQcanvas.height());
+        
         ctx.textAlign = "center";
-        ctx.textBaseline = "alphabetic";
-        ctx.font = "20pt Georgia";
-        ctx.fillText(output,JQcanvas.width()/2,JQcanvas.height()/2);
+        ctx.textBaseline = "middle";
+        ctx.font = "20pt Lucida Grande";
+        if (isError) { ctx.font = "12pt Lucida Grande"; } 
+        ctx.fillStyle = "black"; 
+        ctx.beginPath();
+        
+        ctx.fillText(output,JQcanvas.width()/2,JQcanvas.height()/2);        
+    }
+    
+    function plot() {
+        xMin = $(".inputMin").val();
+        xMax = $(".inputMax").val();
+        plotGraph($(".screen")[0],input_string,xMin,xMax);
+    }
+    
+    function plotGraph(DOMcanvas,expression,x1,x2) {
+        var expr_tree = null;
+        var ctx = DOMcanvas.getContext('2d');
+        var xMin=0;
+        var xMax=0;
+        
+        /* Parse expresssions */
+        try {
+            expr_tree = calculator.parse(expression);
+            xMin = calculator.evaluate(calculator.parse(x1));
+            xMax = calculator.evaluate(calculator.parse(x2));
+            console.log("Expression:",expression,"tree:",expr_tree);
+        }
+        catch(err){
+            /* display error on canvas as text */
+            display_text(err);
+            isError=true;
+//            ctx.fillStyle="black";
+//            ctx.font = "12pt Verdana";
+//            ctx.textAlign="center";
+//            ctx.textBaseline="middle";
+//            ctx.fillText(err,DOMcanvas.width/2,DOMcanvas.height/2);
+            return;
+        }
+        
+        clear();
+        
+        /* prepare array of x values */
+        var xStep = (xMax-xMin)/DOMcanvas.width;
+        var temp = xMin;
+        var xvals = [];
+        while(temp < xMax) {
+            xvals.push(temp + xStep);
+            temp += xStep;
+        }
+        console.log("x values:",xvals);
+        
+        /* gridlines: find the range to get, say, 10 gridlines.
+        convert to scientific notation
+        use .toPrecision to snap the mantissa to a nice number, "nice"
+        you will want gridlines every "nice" units*/
+//        var messyRange = (xMax-xMin)/10;
+        
+        /* Prepare array of y values */
+        var yvals=[];
+        for(var index = 0; index < xvals.length; index += 1) {
+            yvals.push(calculator.evaluate(expr_tree,{x:xvals[index],
+            e:Math.E,pi:Math.PI}));
+        }
+        console.log("y values:",yvals);
+        
+        /* Find min and max Y */
+        var yMin = Number.POSITIVE_INFINITY;
+        var yMax = Number.NEGATIVE_INFINITY;
+        for(var index = 0; index < yvals.length; index+=1){
+            if(yvals[index]<yMin){
+                yMin=yvals[index];
+            }
+            if(yvals[index]>yMax){
+                yMax=yvals[index];
+            }
+        }
+        
+        /* default to -10, 10 if no min or max y */
+        if (yMin == Number.POSITIVE_INFINITY) { yMin = -10; }
+        if (yMax == Number.NEGATIVE_INFINITY) { yMax = 10; }
+        console.log("ymin:",yMin,"ymax:",yMax);
+        
+        /* prepare transformed array of y values to graph */
+        var yGraph = [];
+        var scaleFactor = (DOMcanvas.height-40)/(yMax-yMin);
+        if (yMax-yMin===0) { 
+            scaleFactor = 1;
+            yMin = 0;
+        }
+        for(index=0; index < yvals.length; index +=1){
+            yGraph.push((DOMcanvas.height-20)-((yvals[index]-yMin)*scaleFactor));
+        }
+
+        /* setup to graph the line */
+        ctx.lineWidth = 3;
+        ctx.strokeStyle='#336699';
+        ctx.lineCap='round';
+        ctx.lineJoin='round';
+        ctx.beginPath();
+        ctx.moveTo(0, yGraph[0]);
+        
+        /* travel to each point in turn */
+        for(var i = 0; i < yGraph.length; i++) {
+            ctx.lineTo(i, yGraph[i]);
+        }
+        ctx.stroke();
     }
     
     exports.setup_interface = setup_interface;

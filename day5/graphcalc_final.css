@@ -13,13 +13,23 @@
     margin:20px;
     border-width:1px;
     border-radius:10px;
-    text-align:right;
+/*    text-align:right;*/
 /*
     padding-right:50px;
     padding-top:20px;
 */
     background-color: white;
-    font-size:18pt;
+/*    font-size:18pt;*/
+}
+
+.errorMsg {
+    visibility:hidden;
+    font: 20pt "Lucida Grande";
+    color: red;
+    text-align: center;
+    position: relative;
+    top:100px;
+    left:0px;
 }
 
 button {
