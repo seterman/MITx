@@ -1,16 +1,19 @@
 .background {
-    height:520px;
+/*    height:520px;*/
     width:420px;
     border:solid gray;
     position:relative;
     background-color:#ACBEDF;
+    padding-bottom:20px;
+    border-radius:10px;
 }
 
 .screen {
     height:200px;
-    width:380px;
+    width:375px;
     border:solid gray;
-    margin:20px;
+    margin:18px;
+    margin-top:0px;
     border-width:1px;
     border-radius:10px;
 /*    text-align:right;*/
@@ -28,7 +31,7 @@
     color: red;
     text-align: center;
     position: relative;
-    top:100px;
+    top:80px;
     left:0px;
 }
 
@@ -36,11 +39,25 @@ button {
     height:35px;
     width:90px;
     /*margin:7px;*/
-    margin-left:5px;
+    margin-left:7px;
     margin-top:10px;
     font-size:18pt;
 /*    border-radius:10px;*/
     position:relative;
     left:10px;
 /*    background-color:#D4D4D4;*/
+}
+
+[data-char=pi]{
+    font-family: "Times New Roman";
+}
+
+.equals {
+    height:80px;
+    position:relative;
+    margin-top:-35px;
+/*    top:-35px;*/
+/*    float:right;*/
+/*    left:300px;*/
+    vertical-align:bottom;
 }

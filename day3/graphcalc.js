@@ -74,6 +74,7 @@ var graphcalc = (function () {
         }
         ctx.stroke();
     }
+    
     function clear(canvasJQ, func, minX, maxX){
         var context=canvasJQ[0].getContext('2d');
         //(x,y,dx, dy)

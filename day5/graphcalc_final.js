@@ -4,31 +4,43 @@ var graphcalc = (function () {
 /* sets up the calculator */
     function setup_interface(div) {
         
-        var button_layout = [[{text:"C",class : "clear"},
-                            {text:"&divide;",class : "op",char:"/"},
-                            {text:"&times;",class : "op",char:"*"}],
+        var button_layout = [[{text:"C",class:"clear"},
+                              {text:"&#120013;",class:"num",char:"x"},
+                              {text:"&pi;",class:"op",char:"pi"},
+                              {text:"&#8495;",class:"op",char:"e"}],
+                             
+                             [{text:"sin",class:"op",char:"sin"},
+                              {text:"cos",class:"op",char:"cos"},
+                              {text:"exp",class:"op",char:"exp"},
+                              {text:"log",class:"op",char:"log"}],
+                             
+                             [{text:"(",class:"op",char:"("},
+                              {text:")",class:"op",char:")"},
+                              {text:"&divide;",class:"op",char:"/"},
+                              {text:"&times;",class:"op",char:"*"}],
                           
-                           [{text:"7",class : "num",char:"7"},
-                            {text:"8",class : "num",char:"8"},
-                            {text:"9",class : "num",char:"9"},
-                            {text:"&minus;",class : "op",char:"-"}],
+                             [{text:"7",class:"num",char:"7"},
+                              {text:"8",class:"num",char:"8"},
+                              {text:"9",class:"num",char:"9"},
+                              {text:"&minus;",class:"op",char:"-"}],
                           
-                           [{text:"4",class : "num",char:"4"},
-                            {text:"5",class : "num",char:"5"},
-                            {text:"6",class : "num",char:"6"},
-                            {text:"+",class : "op",char:"+"}],
+                             [{text:"4",class:"num",char:"4"},
+                              {text:"5",class:"num",char:"5"},
+                              {text:"6",class:"num",char:"6"},
+                              {text:"+",class:"op",char:"+"}],
+                        
+                             [{text:"1",class:"num",char:"1"},
+                              {text:"2",class:"num",char:"2"},
+                              {text:"3",class:"num",char:"3"}],
                           
-                          [{text:"1",class : "num",char:"1"},
-                           {text:"2",class : "num",char:"2"},
-                           {text:"3",class : "num",char:"3"},
-                           {text:"&#120013;",class : "num",char:"x"}],
-                          
-                          [{text:"0",class : "num",char:"0"},
-                           {text:".",class : "num",char:"."},
-                           {text:"=",class : "equals"},
-                           {text:"Plot",class : "plot"}]];
+                             [{text:"0",class:"num",char:"0"},
+                              {text:".",class:"num",char:"."},
+                              {text:"Plot",class:"plot"},
+                              {text:"=",class:"equals"}]];
         
         var background = $("<div class=background></div>");
+        
+        background.append($('<div class="errorMsg">ERROR:</div>'),$("<canvas class='screen'></canvas>"));
         
         console.log(button_layout.length);
         for (var rowNum=0; rowNum < button_layout.length; rowNum ++) {
@@ -38,15 +50,20 @@ var graphcalc = (function () {
             
             for (var index=0; index < button_layout[rowNum].length; index++){
                 var el = button_layout[rowNum][index];
-                rowDiv.append($("<button>"+el.text+"</button>", {class:el.class,
-                                                      char:el.char}));
+                var button = $("<button>"+el.text+"</button>");
+                button.addClass(el.class);
+                button.attr("data-char",el.char);
+                rowDiv.append($(button));
             }
         }
+        
+        background.append($("<div class='rangeInputHolder'></div>"));
         
         div.append(background);
         
 //        background.append("<button></button>",{class:item.class,text:item.text})
         
+        /*
         var calc_interface = ''
         + '<div class="background">'
         + '    <div class="errorMsg">ERROR:</div>'
@@ -89,6 +106,7 @@ var graphcalc = (function () {
         + '    </div>'
         + '</div>'     
 //        div.append(calc_interface);
+        */
         
         $('.rangeInputHolder').append("Min:<input class=inputMin></input>"
                                       +"Max:<input class=inputMax></input>")
@@ -133,6 +151,10 @@ var graphcalc = (function () {
             }
             clear();
             display_text(answer);
+            if(!isError) {
+                input_string = answer;
+                display_string = answer;
+            }
             
         });
         
@@ -267,13 +289,17 @@ var graphcalc = (function () {
         /* prepare transformed array of y values to graph */
         var yGraph = [];
         var scaleFactor = (DOMcanvas.height-40)/(yMax-yMin);
-        if (yMax-yMin===0) { 
-            scaleFactor = 1;
-            yMin = 0;
-        }
+//        if ((yMax-yMin)===0) { 
+//            scaleFactor = 1;
+//        }
         for(index=0; index < yvals.length; index +=1){
-            yGraph.push((DOMcanvas.height-20)-((yvals[index]-yMin)*scaleFactor));
+            if((yMax-yMin)===0){
+                yGraph.push(DOMcanvas.height/2);
+            } else {
+                yGraph.push((DOMcanvas.height-20)-((yvals[index]-yMin)*scaleFactor));
+            }
         }
+        console.log("yMin:",yMin,"ygraph:",yGraph);
 
         /* setup to graph the line */
         ctx.lineWidth = 3;
