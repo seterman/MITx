@@ -228,14 +228,6 @@ var graphcalc = (function () {
         plotGraph(input_string,xMin,xMax);
     }
     
-/* helper function that determines if a value is an integer, weak typing */
-    function isInt(val){
-        if(parseFloat(val)==parseInt(val) && !isNaN(val)){
-            return true;
-        } else {
-            return false;
-        }
-    }
     
     var offscreen_DOMcanvas = $("<canvas></canvas>")[0];
     
@@ -271,17 +263,14 @@ var graphcalc = (function () {
         
         /* prepare array of x values */
         var xStep = (xMax-xMin)/DOMcanvas.width;
-        var xGridInterval = (xMax-xMin)/10;
-        console.log("grid interval:",xGridInterval);
+        var xGridInterval = Math.round(DOMcanvas.width/7);
         var temp = xMin;
         var counter = 0;
         var xvals = [];
         var xGridVals = []
-        while(counter < DOMcanvas.width) {
+        while(counter <= DOMcanvas.width) {
             xvals.push(temp);
-            var ratio = ((temp-xMin)/xGridInterval).toFixed(2);
-            console.log("current x val:",temp,"xval/gridInterval:",ratio);
-            if (isInt(ratio)){
+            if (counter%xGridInterval === 0){
                 xGridVals.push(temp.toFixed(2));
             }
             temp += xStep;
@@ -339,10 +328,10 @@ var graphcalc = (function () {
         bctx.lineWidth = 2;
         bctx.strokeStyle='lightgray';
         bctx.lineCap = 'square';
-        for(var i=0; i < 10; i++){
+        for(var i=0; i < 7; i++){
             bctx.beginPath();
-            bctx.moveTo(DOMcanvas.width/10*i,0);
-            bctx.lineTo(DOMcanvas.width/10*i,JQcanvas.height());
+            bctx.moveTo(xGridInterval*i,0);
+            bctx.lineTo(xGridInterval*i,JQcanvas.height());
             bctx.stroke();
             
             bctx.fillStyle='darkgray';
@@ -350,7 +339,7 @@ var graphcalc = (function () {
             bctx.textAlign='left';
             bctx.textBaseline='top';
             bctx.beginPath();
-            bctx.fillText(xGridVals[i],DOMcanvas.width/10*i,0);
+            bctx.fillText(xGridVals[i],xGridInterval*i,0);
             
         }
         
@@ -403,7 +392,6 @@ var graphcalc = (function () {
     }
     
     exports.setup_interface = setup_interface;
-    exports.isInt = isInt;
     return exports;
 }());
 
