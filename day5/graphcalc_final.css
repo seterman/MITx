@@ -15,7 +15,7 @@
     margin:18px;
     margin-top:0px;
     border-width:1px;
-    border-radius:10px;
+    border-radius:4px;
 /*    text-align:right;*/
 /*
     padding-right:50px;
@@ -35,6 +35,10 @@
     left:0px;
 }
 
+.row {
+    position:relative;
+}
+
 button {
     height:35px;
     width:90px;
@@ -50,7 +54,16 @@ button {
 
 [data-char=pi]{
     font-family: "Times New Roman";
+    position:relative;
+    top:-2px;
 }
+
+/*
+[data-char=e] {
+    position:relative;
+    top:2px;
+}
+*/
 
 .equals {
     height:80px;
