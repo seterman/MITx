@@ -263,20 +263,13 @@ var graphcalc = (function () {
         
         /* prepare array of x values */
         var xStep = (xMax-xMin)/DOMcanvas.width;
-        var xGridInterval = Math.round(DOMcanvas.width/7);
         var temp = xMin;
-        var counter = 0;
         var xvals = [];
-        var xGridVals = []
-        while(counter <= DOMcanvas.width) {
-            xvals.push(temp);
-            if (counter%xGridInterval === 0){
-                xGridVals.push(temp.toFixed(2));
-            }
+        while(temp < xMax) {
+            xvals.push(temp + xStep);
             temp += xStep;
-            counter ++;
         }
-        console.log("x grid values:",xGridVals);
+//        console.log("x values:",xvals);
         
         /* gridlines: find the range to get, say, 10 gridlines.
         convert to scientific notation
@@ -324,25 +317,6 @@ var graphcalc = (function () {
         }
 //        console.log("yMin:",yMin,"ygraph:",yGraph);
 
-        /* graph vertical gridlines */
-        bctx.lineWidth = 2;
-        bctx.strokeStyle='lightgray';
-        bctx.lineCap = 'square';
-        for(var i=0; i < 7; i++){
-            bctx.beginPath();
-            bctx.moveTo(xGridInterval*i,0);
-            bctx.lineTo(xGridInterval*i,JQcanvas.height());
-            bctx.stroke();
-            
-            bctx.fillStyle='darkgray';
-            bctx.font="8pt Lucida Grande";
-            bctx.textAlign='left';
-            bctx.textBaseline='top';
-            bctx.beginPath();
-            bctx.fillText(xGridVals[i],xGridInterval*i,0);
-            
-        }
-        
         /* setup to graph the line */
         bctx.lineWidth = 3;
         bctx.strokeStyle='#336699';
