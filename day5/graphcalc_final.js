@@ -9,10 +9,10 @@ var graphcalc = (function () {
                               {text:"&pi;",class:"op",char:"pi"},
                               {text:"e",class:"op",char:"e"}],
                              
-                             [{text:"sin",class:"op",char:"sin"},
-                              {text:"cos",class:"op",char:"cos"},
-                              {text:"exp",class:"op",char:"exp"},
-                              {text:"log",class:"op",char:"log"}],
+                             [{text:"sin(",class:"op",char:"sin("},
+                              {text:"cos(",class:"op",char:"cos("},
+                              {text:"exp(",class:"op",char:"exp("},
+                              {text:"log(",class:"op",char:"log("}],
                              
                              [{text:"(",class:"op",char:"("},
                               {text:")",class:"op",char:")"},
@@ -113,7 +113,7 @@ var graphcalc = (function () {
         
         
         /* sets default min and max values */
-        $('.inputMin').val("1");
+        $('.inputMin').val("0");
         $('.inputMax').val("10");
         
         bind_buttons();
@@ -132,7 +132,7 @@ var graphcalc = (function () {
             var input = $(this).attr("data-char");
             input_string += input;
             display_string += $(this).text();
-            console.log("input:",input,"string:",input_string);
+//            console.log("input:",input,"string:",input_string);
             
             display_text(display_string);
             
@@ -223,15 +223,33 @@ var graphcalc = (function () {
     
 /* gets min and max values and plots the curve */
     function plot() {
-        xMin = $(".inputMin").val();
-        xMax = $(".inputMax").val();
+        var xMin = $(".inputMin").val();
+        var xMax = $(".inputMax").val();
         plotGraph(input_string,xMin,xMax);
     }
     
+/* functions to convert from x and y values to canvas coords */
+    function toCanvasX(x,xMin,xMax){
+//        console.log("x:",x,"x-xMin:",x-xMin,"xmax:",xMax,"xmax-xmin:",xMax-xMin);
+        DOMcanvas = $('.screen')[0];
+        return ((x-xMin)/(xMax-xMin))*DOMcanvas.width;
+    }
+    
+    function toCanvasY(y,yMin,yMax){
+        DOMcanvas = $('.screen')[0];
+        var scaleFactor = (DOMcanvas.height-40)/(yMax-yMin);
+        if(yMin==yMax){
+            return DOMcanvas.height/2;
+        } else {
+            return (DOMcanvas.height-20)-((y-yMin)*scaleFactor);
+        }
+//        console.log("y:",y,"ymin:",yMin,"yMax",yMax,"scale factor:",scaleFactor);
+//        return (DOMcanvas.height-20)-((y-yMin)*scaleFactor);
+    }
     
     var offscreen_DOMcanvas = $("<canvas></canvas>")[0];
     
-/* draws the curve on the background canvas */
+/* draws the curve and gridlines on the background canvas */
     function plotGraph(expression,x1,x2) {
         var JQcanvas = $('.screen');
         var DOMcanvas = JQcanvas[0];
@@ -242,15 +260,14 @@ var graphcalc = (function () {
         var bctx = offscreen_DOMcanvas.getContext('2d');
         
         var expr_tree = null;
-        var xMin=0;
-        var xMax=0;
+        var xMin;
+        var xMax;
         
         /* Parse expresssions */
         try {
             expr_tree = calculator.parse(expression);
             xMin = calculator.evaluate(calculator.parse(x1));
             xMax = calculator.evaluate(calculator.parse(x2));
-            console.log("Expression:",expression,"tree:",expr_tree);
         }
         catch(err){
             /* display error on canvas as text */
@@ -258,6 +275,7 @@ var graphcalc = (function () {
             display_text(err);
             return;
         }
+//        console.log("xmax:",xMax);
         
         clear();
         
@@ -269,13 +287,7 @@ var graphcalc = (function () {
             xvals.push(temp + xStep);
             temp += xStep;
         }
-//        console.log("x values:",xvals);
         
-        /* gridlines: find the range to get, say, 10 gridlines.
-        convert to scientific notation
-        use .toPrecision to snap the mantissa to a nice number, "nice"
-        you will want gridlines every "nice" units*/
-//        var messyRange = (xMax-xMin)/10;
         
         /* Prepare array of y values */
         var yvals=[];
@@ -283,7 +295,6 @@ var graphcalc = (function () {
             yvals.push(calculator.evaluate(expr_tree,{x:xvals[index],
             e:Math.E,pi:Math.PI}));
         }
-//        console.log("y values:",yvals);
         
         /* Find min and max Y */
         var yMin = Number.POSITIVE_INFINITY;
@@ -300,9 +311,9 @@ var graphcalc = (function () {
         /* default to -10, 10 if no min or max y */
         if (yMin == Number.POSITIVE_INFINITY) { yMin = -10; }
         if (yMax == Number.NEGATIVE_INFINITY) { yMax = 10; }
-//        console.log("ymin:",yMin,"ymax:",yMax);
         
         /* prepare transformed array of y values to graph */
+        /*
         var yGraph = [];
         var scaleFactor = (DOMcanvas.height-40)/(yMax-yMin);
 //        if ((yMax-yMin)===0) { 
@@ -314,9 +325,58 @@ var graphcalc = (function () {
             } else {
                 yGraph.push((DOMcanvas.height-20)-((yvals[index]-yMin)*scaleFactor));
             }
+        } */
+        var yGraph = [];
+        for (var i=0; i<yvals.length; i++){
+            yGraph.push(toCanvasY(yvals[i],yMin,yMax));
         }
-//        console.log("yMin:",yMin,"ygraph:",yGraph);
 
+        /* gridlines: find the range to get, say, 10 gridlines.
+        convert to scientific notation
+        use .toPrecision to snap the mantissa to a nice number, "nice"
+        you will want gridlines every "nice" units */
+        
+        /* find gridline intervals */
+        var xMessyInterval = (xMax-xMin)/5;
+        var xLogInterval = Math.log(xMessyInterval)/Math.LN10;
+        var xOrder = Math.floor(xLogInterval);
+        var xRem = Math.pow(10,(xLogInterval-xOrder));
+        var xInterval;
+        if (xRem>5){
+            xInterval = 5;
+        } else if (xRem>2){
+            xInterval=2;
+        } else {
+            xInterval=1;
+        }
+        
+        xInterval *= (Math.pow(10,xOrder));
+        
+        var xGridStart = (Math.ceil(xMin/xInterval))*xInterval;
+//        console.log("x interval:",xInterval,"start:",xGridStart)
+        
+        /* graph vertical gridlines */
+        bctx.lineWidth = 2;
+        bctx.strokeStyle = 'lightgray';
+        bctx.lineCap = 'square';
+        
+        var temp2 = xGridStart;
+        while(temp2 < xMax){
+            var cx = toCanvasX(temp2,xMin,xMax);
+            bctx.beginPath();
+            bctx.moveTo(cx,0);
+            bctx.lineTo(cx,offscreen_DOMcanvas.height);
+            bctx.stroke();
+            
+            bctx.fillStyle = 'darkgray';
+            bctx.textAlign = 'left';
+            bctx.textBaseline = 'top';
+            bctx.fontSize = '8pt';
+            bctx.fillText(temp2,cx+2,0);
+            
+            temp2 += xInterval;
+        }
+        
         /* setup to graph the line */
         bctx.lineWidth = 3;
         bctx.strokeStyle='#336699';
@@ -326,28 +386,27 @@ var graphcalc = (function () {
         bctx.moveTo(0, yGraph[0]);
         
         /* travel to each point in turn */
-        for(var i = 0; i < yGraph.length; i++) {
+        for(var i = 0; i < yvals.length; i++) {
             bctx.lineTo(i, yGraph[i]);
         }
         bctx.stroke();
         ctx.drawImage(offscreen_DOMcanvas,0,0);
         
-        JQcanvas.on("mousemove",mousefollow);
+        JQcanvas.on("mousemove",null,{yGraph:yGraph,yvals:yvals,xvals:xvals},mousefollow);
     }
     
-    function test_mouse(event){
-        console.log("mx:",event.pageX,"my:",event.pageY);
-    }
-    
+/* draw a vertical line that follows the mouse */
     function mousefollow(evt) {
+//        console.log("data:",evt.data,"ygraph:",evt.data.yGraph);
         var JQcanvas = $('.screen');
         var DOMcanvas = JQcanvas[0];
         var ctx = DOMcanvas.getContext('2d');
+        var yGraph = evt.data.yGraph;
+        var xvals = evt.data.xvals;
+        var yvals = evt.data.yvals;
         
         var mx = evt.pageX;
         var my = evt.pageY;
-        
-//        console.log("mx:",mx,"my",my);
         
         var offset = JQcanvas.offset(); // gives {left: ..., top: ...}
 		mx = Math.round(mx - offset.left);
@@ -355,17 +414,40 @@ var graphcalc = (function () {
         
         ctx.clearRect(0,0,JQcanvas.width(),JQcanvas.height());
         
+        /* vertical line */
         ctx.beginPath();
         ctx.lineWidth = 2;
-        ctx.strokeStyle='lightgray';
+        ctx.strokeStyle='darkgray';
         ctx.lineCap='square';
         ctx.moveTo(mx,0);
         ctx.lineTo(mx,JQcanvas.height());
         ctx.stroke();
+        
+        /* background image */
         ctx.drawImage(offscreen_DOMcanvas,0,0);
+        
+        /* circle on intersect */
+        ctx.strokeStyle='black';
+        ctx.lineCap='round';
+        ctx.lineWidth=1;
+        ctx.beginPath();
+        ctx.arc(mx,yGraph[mx],5,Math.PI,3*Math.PI);
+        ctx.stroke();
+        
+        /* labels */
+        ctx.font='8pt Lucida Grande';
+        ctx.fillStyle='#1F1F1F';
+        ctx.textAlign='left';
+        ctx.textBaseline='bottom';
+//        ctx.moveTo(mx,JQcanvas.height()-2);
+        ctx.beginPath();
+        ctx.fillText("x: "+(xvals[mx]).toFixed(3),mx+2,JQcanvas.height()-12);
+        ctx.beginPath();
+        ctx.fillText("y: "+(yvals[mx]).toFixed(3),mx+2,JQcanvas.height()-2);
     }
     
     exports.setup_interface = setup_interface;
+    exports.toCanvasX = toCanvasX;
     return exports;
 }());
 
