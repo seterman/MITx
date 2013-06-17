@@ -1,11 +1,13 @@
 .background {
 /*    height:520px;*/
     width:420px;
-    border:solid gray;
+/*    border: 1px solid gray;*/
     position:relative;
     background-color:#ACBEDF;
     padding-bottom:20px;
     border-radius:10px;
+    box-shadow: 10px 10px 20px #30364A, -5px -5px 10px #697996 inset, 5px 5px 10px #D1D8E5 inset;
+    background: -webkit-linear-gradient(bottom,#B1BAD4,#ACBEDF);
 }
 
 .screen {
@@ -16,19 +18,14 @@
     margin-top:0px;
     border-width:1px;
     border-radius:4px;
-/*    text-align:right;*/
-/*
-    padding-right:50px;
-    padding-top:20px;
-*/
     background-color: white;
-/*    font-size:18pt;*/
+    box-shadow: 0px 0px 5px lightsteelblue inset, 0px 5px 5px #D9E0EE;
 }
 
 .errorMsg {
     visibility:hidden;
     font: 20pt "Lucida Grande";
-    color: red;
+    color: #336699;
     text-align: center;
     position: relative;
     top:80px;
@@ -39,6 +36,28 @@
     position:relative;
 }
 
+.rangeInputHolder{
+    margin:20px;
+    margin-top:10px;
+    margin-bottom:0px;
+    font: 12pt "Lucida Grande";
+    border: 1px solid darkgray;
+    border-radius: 10px;
+    text-align:right;
+    padding:5px;
+    box-shadow: 0px 2px 2px #D9E0EE, 0px 3px 3px #DDDDDD inset;
+    background: -webkit-linear-gradient(bottom,#B1BAD4,#ACBEDF);
+}
+
+input{
+    font: 14pt "Lucida Grande";
+    border: 1px solid darkgray;
+    box-shadow: 0px 2px 2px #D9E0EE;
+    border-radius: 4px;
+    background-color: #DDDDDD;
+    width: 85%;
+}
+
 button {
     height:35px;
     width:90px;
@@ -46,10 +65,17 @@ button {
     margin-left:7px;
     margin-top:10px;
     font-size:18pt;
-/*    border-radius:10px;*/
+    border:1px solid darkgray;
+    border-radius:7px;
     position:relative;
-    left:10px;
-/*    background-color:#D4D4D4;*/
+    left:12px;
+    background-color: silver;
+    background: -webkit-linear-gradient(top,white,silver);
+    box-shadow: 0px 2px 2px #D9E0EE, 0px 3px 3px #DDDDDD inset;
+}
+
+.special {
+    width:380px;
 }
 
 [data-char=pi]{
@@ -57,13 +83,6 @@ button {
     position:relative;
     top:-2px;
 }
-
-/*
-[data-char=e] {
-    position:relative;
-    top:2px;
-}
-*/
 
 .equals {
     height:80px;
