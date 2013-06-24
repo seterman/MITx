@@ -78,6 +78,15 @@ button {
     width:380px;
 }
 
+.minimize{
+    width:150px;
+}
+
+.maximize{
+    width:150px;
+/*    visibility:hidden;*/
+}
+
 [data-char=pi]{
     font-family: "Times New Roman";
     position:relative;

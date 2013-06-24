@@ -1,0 +1,35 @@
+.display {
+    font-size:20pt;
+}
+
+
+.display .item {
+    border: 2px solid black;
+    margin:3px;
+    padding:3px;
+    width:230px;
+    font-size:12pt;
+    display: inline-block;
+    background-color:white;
+}
+
+.display .location {
+    font-size:18pt;
+    text-align:center;
+    display: inline-block;
+    width: 500px;
+    height: 345px;
+    border: 2px solid black;
+}
+
+.display .location#house {
+    background-color: lightblue;
+}
+
+.display .location#bag {
+    background-color: lightgreen;
+}
+
+.display #bag .item {
+    visibility:hidden;
+}

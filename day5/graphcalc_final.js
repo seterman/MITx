@@ -42,7 +42,7 @@ var graphcalc = (function () {
         
         background.append($('<div class="errorMsg">ERROR:</div>'),$("<canvas class='screen'></canvas>"));
         
-        background.append($("<button class='special'>Click Me!</button>"));
+        //background.append($("<button class='special'>Click Me!</button>"));
         
 //        console.log(button_layout.length);
         for (var rowNum=0; rowNum < button_layout.length; rowNum ++) {
@@ -63,62 +63,34 @@ var graphcalc = (function () {
         
         div.append(background);
         
-//        background.append("<button></button>",{class:item.class,text:item.text})
-        
-        /*
-        var calc_interface = ''
-        + '<div class="background">'
-        + '    <div class="errorMsg">ERROR:</div>'
-        + '    <canvas class="screen"></canvas>'
-//        + '    <div class="row">'
-//        + '        <button>MC</button>'
-//        + '        <button>M+</button>'
-//        + '        <button>M-</button>'
-//        + '        <button>MRC</button>'
-//        + '    </div>'
-        + '    <div class="rangeInputHolder"></div>'
-        + '    <div class="row">'
-        + '        <button class="clear">C</button>'
-        + '        <button class="op" data-char="/">÷</button>'
-        + '        <button class="op" data-char="*">x</button>'
-        + '    </div>'
-        + '    <div class="row">'
-        + '        <button class="num" data-char="7">7</button>'
-        + '        <button class="num" data-char="8">8</button>'
-        + '        <button class="num" data-char="9">9</button>'
-        + '        <button class="op" data-char="-">-</button>'
-        + '    </div>'
-        + '    <div class="row">'
-        + '        <button class="num" data-char="4">4</button>'
-        + '        <button class="num" data-char="5">5</button>'
-        + '        <button class="num" data-char="6">6</button>'
-        + '        <button class= "op" data-char="+">+</button>'
-        + '    </div>'
-        + '    <div class="row">'
-        + '        <button class="num" data-char="1">1</button>'
-        + '        <button class="num" data-char="2">2</button>'
-        + '        <button class="num" data-char="3">3</button>'
-        + '        <button class="num" data-char="x">&#120013;</button>'
-        + '    </div>'
-        + '    <div class="row">'
-        + '        <button class="num" data-char="0">0</button>'
-        + '        <button class="num" data-char=".">.</button>'
-        + '        <button class="equals">=</button>'
-        + '        <button class="plot">Plot</button>'
-        + '    </div>'
-        + '</div>'     
-//        div.append(calc_interface);
-        */
-        
         $('.rangeInputHolder').append("Min:   <input class=inputMin></input></br>"
                                       +"Max: <input class=inputMax></input>")
-        
         
         /* sets default min and max values */
         $('.inputMin').val("0");
         $('.inputMax').val("10");
         
         bind_buttons();
+        
+        /* minimize */
+        var minimize = $("<button class='minimize'>Minimize</button>");
+        var maximize = $("<button class='maximize'>Maximize</button>");
+        minimize.on("click", function(){
+            background.toggle(1000);
+            maximize.show();
+            minimize.hide();
+        maximize.on("click",function(){
+            background.toggle(1000);
+            minimize.show();
+            maximize.hide();
+        })
+//            background.css("display","none");
+        })
+        div.append(minimize,maximize);
+    }
+    
+    function minimize() {
+        $('.background')
     }
     
     var input_string  = ""
@@ -191,7 +163,7 @@ var graphcalc = (function () {
         });
         
         /* special */
-        $('.special').on("click",heart);
+        //$('.special').on("click",heart);
         
     }
     
@@ -451,10 +423,6 @@ var graphcalc = (function () {
         ctx.beginPath();
         ctx.fillText("y: "+(yvals[mx]).toFixed(3),mx+2,JQcanvas.height()-2);
     }
-    
-/* special: draw a heart */
-    
-    
     
     exports.setup_interface = setup_interface;
     return exports;
