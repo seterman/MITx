@@ -15,11 +15,15 @@ Model
             all_items = items;
         }
         
-        // move an object into the knapsack
+        // move an object into or out of the knapsack
+        // returns true if the action was completed
         function move(index){
             var item = all_items[index];
-//            console.log("moving item ",item);
+            
             if (item.location == "house"){
+                if(total_weight + item.weight > max_weight){
+                    return false;
+                }
                 item.location = "knapsack";
                 total_value += item.value;
                 total_weight += item.weight;
@@ -27,7 +31,8 @@ Model
                 event_handler.trigger("add",{item:item,
                                              value:total_value,
                                              weight:total_weight});
-            } else{
+                return true;
+            } else {
                 item.location = "house";
                 total_value -= item.value;
                 total_weight -= item.weight;
@@ -35,6 +40,7 @@ Model
                 event_handler.trigger("remove",{item:item,
                                              value:total_value,
                                              weight:total_weight});
+                return true;
             }
             
             console.log("total weight:",total_weight,"total value:",total_value);
@@ -51,9 +57,12 @@ Model
 Controller
 *********************************/
     function Controller(model){
-        function click_handler(evt){
-//            console.log("click! target:",$(evt.target).attr("data-index"));  
-            model.move($(evt.target).attr("data-index"));
+        function click_handler(evt){  
+            var performed = model.move($(evt.target).attr("data-index"));
+            
+            if (!performed){
+                model.trigger("too_full");
+            }
         }
         
         return {click_handler:click_handler};
@@ -74,8 +83,11 @@ View
             display.append($("<div>Total value: <span id='val'>$0</span>"));
             display.find("#max").text(max);
             
+            display.append($("<div class='full'>Your knapsack is too full to add that item!</div>"));
+            
             div.append(display);
             
+            // for each item, create the divs that display it
             for(var i=0; i < items.length; i += 1){
                 current = items[i];
                 var item_div = $("<div class='item'></div>");
@@ -102,29 +114,44 @@ View
             }
         }
         
+        // adds an item's icon to the knapsack
         function add(data){
             hdiv = data.item.house_div;
             bdiv = data.item.bag_div;
             
-            hdiv.css("visibility","hidden");
-            bdiv.css("visibility","visible");
+            hdiv.animate({"opacity":0},500);
+            hdiv.css("pointer-events","none");
+            bdiv.animate({"opacity":1},500);
+            bdiv.css("pointer-events","auto");
             set_wt_val(data);
         }
         
+        // removes an item's icon from the knapsack
         function remove(data){
             hdiv = data.item.house_div;
             bdiv = data.item.bag_div;
             
-            bdiv.css("visibility","hidden");
-            hdiv.css("visibility","visible");
+            bdiv.animate({"opacity":0},500);
+            bdiv.css("pointer-events","none");
+            hdiv.animate({"opacity":1},500);
+            hdiv.css("pointer-events","auto");
             set_wt_val(data);
         }
         
+        // updates the weight and value fields
         function set_wt_val(data){
             $('.display span#weight').text(data.weight);
             $('.display span#val').text("$"+data.value);
         }
         
+        // shows error when an item cannot be added
+        function full_error(){
+            $('.display .full').animate({opacity:1},500).delay(800).animate({opacity:0},500);
+        }
+        
+        // binds handlers and sets up initial display:
+        // called once when initialized
+        model.on("too_full",full_error);
         model.on("add",add);
         model.on("remove",remove);
         setup_display(div,items,max);
@@ -167,10 +194,12 @@ Setup
 ************************************/
     function setup(div){
         
+        // get the items from the parent div
         var raw_items = div.children();
         var maxweight = div.attr("data-maxweight");
         div.empty();
         
+        // form a list of objects with the raw items
         var items = [];
         for (var i=0; i < raw_items.length; i += 1){
             var current = raw_items.eq(i);
@@ -184,8 +213,7 @@ Setup
                        });
         }
         
-//        console.log("items:",items);
-        
+        // initialize the three parts of the program
         var model = Model();
         var controller = Controller(model);
         var view = View(div,items,maxweight,model,controller);

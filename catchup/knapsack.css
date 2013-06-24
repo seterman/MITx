@@ -1,7 +1,18 @@
 .display {
     font-size:20pt;
+    position:relative;
 }
 
+.display .full {
+    position:absolute;
+    left: 280px;
+    top: 200px;
+    background-color:white;
+    border: 2px black solid;
+    color: red;
+    box-shadow: 2px 2px 5px black;
+    opacity:0;
+}
 
 .display .item {
     border: 2px solid black;
@@ -11,6 +22,10 @@
     font-size:12pt;
     display: inline-block;
     background-color:white;
+}
+
+.display .item img {
+    pointer-events:none;
 }
 
 .display .location {
@@ -31,5 +46,5 @@
 }
 
 .display #bag .item {
-    visibility:hidden;
+    opacity:0;
 }
